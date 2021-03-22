@@ -24,7 +24,7 @@
             <form action="" method="post">
                 <input type="text" class="form-control" name="text_input" onkeypress='return isNumbernoDot(event)' value="<?php echo $text_input; ?>" required>
                 <div class="d-flex">
-                <button type="submit" class="btn btn-outline-primary mt-2 ml-auto">Submit</button>
+                    <button type="submit" class="btn btn-outline-primary mt-2 ml-auto">Submit</button>
                 </div>
             </form>
         </div>
@@ -32,55 +32,113 @@
         <?php
         if ($text_input != '') {
             $value =  explode(',', $text_input);
-     
+
+            class data
+            {
+                public $sum;
+                public $shot;
+                public $duplicated;
+
+                function set_sum($sum)
+                {
+                    $this->sum = $sum;
+                }
+
+                function set_shot($shot)
+                {
+                    $this->shot = $this->shot.$shot;
+                }
+
+                function set_duplicated($duplicated)
+                {
+                    $this->duplicated = $this->duplicated.$duplicated;
+                }
+            }
+
+
+            $data_all = new data();
+
+
+            $sum = 0;
+            $data_sum = $value;
+            foreach ($data_sum as $key => $num) {
+                if ((int)$num > 10) {
+                    $sum = (int)substr((int)$num, -1) + $sum;
+                } else {
+                    $sum = (int)$num + $sum;
+                }
+            }
+
+            $data_all->set_sum($sum);
+
+
+            sort($value, SORT_NUMERIC);
+            $data_shot = array_count_values($value);
+
+            foreach ($data_shot as $key => $num) {
+                if ($key != '') {
+                    $data_all->set_shot($key.',');
+                }
+            }
+
+            $data_duplicated = array_count_values($value);
+            foreach ($data_duplicated as $key => $num) {
+                if ((int)$num > 1) {
+                    $data_all->set_duplicated($key.',');
+                }
+            }
+
+            echo json_encode($data_all)
+
 
         ?>
-        <div>
-            <span>sum : <?php
-                        $sum = 0;
-                        $data_sum = $value;
-                        foreach ($data_sum as $key => $num) {
-                            if ((int)$num > 10) {
-                                $sum = (int)substr((int)$num,-1) + $sum;
-                            }
-                            else{
-                                $sum = (int)$num + $sum;
-                            }
-                        }
-                        echo  $sum; ?></span><br>
-            <span>
-                shot : <?php
-
-                        sort($value, SORT_NUMERIC);
-
-                        $data_shot = array_count_values($value);
-
-                        foreach ($data_shot as $key => $num) {
-                            if ($key != '') {
-                            echo  $key;
-                            echo ',';
-                            }
-                        }
-                        ?>
-            </span><br>
-            <span>
-                duplicated : <?php
-                                $data_duplicated = array_count_values($value);
-                                foreach ($data_duplicated as $key => $num) {
-                                    if ((int)$num > 1) {
-                                        echo  $key;
-                                        echo ',';
-                                    }
+        <br>
+            <div>
+                <span>sum : <?php
+                            $sum = 0;
+                            $data_sum = $value;
+                            foreach ($data_sum as $key => $num) {
+                                if ((int)$num > 10) {
+                                    $sum = (int)substr((int)$num, -1) + $sum;
+                                } else {
+                                    $sum = (int)$num + $sum;
                                 }
-                                ?>
+                            }
+                            echo  $sum; ?></span><br>
+                <span>
+                    shot : <?php
 
-            </span>
-        </div>
+                            sort($value, SORT_NUMERIC);
+
+                            $data_shot = array_count_values($value);
+
+                            foreach ($data_shot as $key => $num) {
+                                if ($key != '') {
+                                    echo  $key;
+                                    echo ',';
+                                }
+                            }
+                            ?>
+                </span><br>
+                <span>
+                    duplicated : <?php
+                                    $data_duplicated = array_count_values($value);
+                                    foreach ($data_duplicated as $key => $num) {
+                                        if ((int)$num > 1) {
+                                            echo  $key;
+                                            echo ',';
+                                        }
+                                    }
+                                    ?>
+
+                </span>
+            </div>
         <?php } ?>
     </div>
 
     <script>
         var key_old = '';
+
         function isNumbernoDot(e) {
             var charCode;
             if (e.keyCode > 0) {
